@@ -1,7 +1,0 @@
-Démarrage de DDC bot
-Démarrage de cocoyico
-[2024-05-18 04:01:04] [INFO    ] discord.client: logging in using static token
-[2024-05-18 04:01:05] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 54e2988c5d05c50b03f3e74dbd83d722).
-[2024-05-18 07:13:15] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 54e2988c5d05c50b03f3e74dbd83d722.
-[2024-05-18 10:20:19] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 54e2988c5d05c50b03f3e74dbd83d722.
-[2024-05-18 10:49:15] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 54e2988c5d05c50b03f3e74dbd83d722.
