@@ -26,4 +26,4 @@ Pour permettre à **VS Code** d'utiliser **Git** avec l'authentification SSH san
 - **sauv_rpi.sh** : Crée une image du disque d'un Raspberry Pi, la compresse et la transfère vers le cloud.
 - **ip_scanner.sh** : Scanne le réseau local pour détecter les hôtes actifs et leurs informations. ✅
 - **bot_discord.sh** : Démarre les bots Discord DDC et cocoyico. ✅
-- **backup_system.sh** : Monte un disque, initialise un dépôt Restic et crée une sauvegarde du système.
+
