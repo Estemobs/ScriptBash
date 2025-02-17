@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Répertoire de sauvegarde
-BACKUP_DIR="/home/backup_$(date +%Y-%m-%d_%H-%M-%S)"
+# Répertoire de sauvegarde dans le home de l'utilisateur exécutant le script
+USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
+BACKUP_DIR="$USER_HOME/backup_$(date +%Y-%m-%d_%H-%M-%S)"
 LOG_FILE="$BACKUP_DIR/backup.log"
 mkdir -p "$BACKUP_DIR"
 
@@ -64,11 +65,11 @@ sudo crontab -l > "$BACKUP_DIR/sudo-crontab.txt" && log "Sauvegarde de sudo cron
 
 # Création de l'archive ZIP
 log "Création de l'archive ZIP..."
-cd "$HOME"
-zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR" && log "Création de l'archive ZIP réussie."
+cd "$USER_HOME"
+zip -r "$USER_HOME/$(basename $BACKUP_DIR).zip" "$BACKUP_DIR" && log "Création de l'archive ZIP réussie."
 
 # Nettoyage
 log "Nettoyage des fichiers temporaires..."
 rm -rf "$BACKUP_DIR" && log "Nettoyage des fichiers temporaires réussi."
 
-log "Sauvegarde terminée ! L'archive se trouve dans : $HOME/$BACKUP_DIR.zip"
+log "Sauvegarde terminée ! L'archive se trouve dans : $USER_HOME/$(basename $BACKUP_DIR).zip"
