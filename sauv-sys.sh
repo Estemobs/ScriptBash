@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Répertoire de sauvegarde
-BACKUP_DIR="$HOME/backup_$(date +%Y-%m-%d_%H-%M-%S)"
+BACKUP_DIR="/home/backup_$(date +%Y-%m-%d_%H-%M-%S)"
 LOG_FILE="$BACKUP_DIR/backup.log"
 mkdir -p "$BACKUP_DIR"
 
