@@ -66,7 +66,7 @@ sudo crontab -l > "$BACKUP_DIR/sudo-crontab.txt" && log "Sauvegarde de sudo cron
 # Création de l'archive ZIP
 log "Création de l'archive ZIP..."
 cd "$USER_HOME"
-zip -r "$USER_HOME/$(basename $BACKUP_DIR).zip" "$BACKUP_DIR" && log "Création de l'archive ZIP réussie."
+zip -r "$(basename $BACKUP_DIR).zip" "$(basename $BACKUP_DIR)" && log "Création de l'archive ZIP réussie."
 
 # Nettoyage
 log "Nettoyage des fichiers temporaires..."
