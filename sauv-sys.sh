@@ -60,7 +60,22 @@ log "Sauvegarde des thèmes et icônes..."
 
 # Sauvegarde des fichiers personnels importants
 log "Sauvegarde des fichiers personnels..."
-cp -r /home/* "$BACKUP_DIR/home" && log "Sauvegarde de /home réussie."
+for item in /home/*; do
+    if [[ -d "$item" && "$item" != *"ScriptBash"* ]]; then
+        log "Sauvegarde du répertoire : $item"
+        cp -r "$item" "$BACKUP_DIR/home"
+    elif [[ -f "$item" && "$item" != /home/.* ]]; then
+        log "Sauvegarde du fichier : $item"
+        cp "$item" "$BACKUP_DIR/home"
+    fi
+done
+for hidden_item in /home/.*; do
+    if [[ "$hidden_item" == "/home/.bashrc" || "$hidden_item" == "/home/.profile" || "$hidden_item" == "/home/.bash_profile" ]]; then
+        log "Sauvegarde du fichier caché : $hidden_item"
+        cp "$hidden_item" "$BACKUP_DIR/home"
+    fi
+done
+log "Sauvegarde de /home réussie."
 
 # Sauvegarde des crontabs
 log "Sauvegarde des crontabs..."
