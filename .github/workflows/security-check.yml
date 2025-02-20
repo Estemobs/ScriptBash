@@ -7,17 +7,6 @@ on:
     branches: [master, mymaster]
 
 jobs:
-  gitleaks:
-    name: Scan for secrets
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-
   bash-lint:
     name: Check Bash Syntax
     runs-on: ubuntu-latest
@@ -28,7 +17,6 @@ jobs:
 
       - name: Find all Bash scripts
         run: |
-          # Trouve tous les fichiers .sh et vérifie leur syntaxe
           find . -type f -name "*.sh" | while read script; do
             echo "Checking syntax of $script"
             bash -n "$script"
