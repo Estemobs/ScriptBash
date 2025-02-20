@@ -44,7 +44,6 @@ log "Sauvegarde des configurations..."
 [ -d "$USER_HOME/.config" ] && cp -r "$USER_HOME/.config" "$BACKUP_DIR/config" && log "Sauvegarde de .config réussie."
 [ -f "$USER_HOME/.bashrc" ] && cp "$USER_HOME/.bashrc" "$BACKUP_DIR/.bashrc" && log "Sauvegarde de .bashrc réussie."
 [ -f "/root/.bashrc" ] && cp "/root/.bashrc" "$BACKUP_DIR/root.bashrc" && log "Sauvegarde de root.bashrc réussie."
-[ -d "$USER_HOME/.local/share" ] && cp -r "$USER_HOME/.local/share" "$BACKUP_DIR/.local_share" && log "Sauvegarde de .local/share réussie."
 [ -d "$USER_HOME/.gnupg" ] && cp -r "$USER_HOME/.gnupg" "$BACKUP_DIR/.gnupg" && log "Sauvegarde de .gnupg réussie."
 [ -d "$USER_HOME/.ssh" ] && cp -r "$USER_HOME/.ssh" "$BACKUP_DIR/ssh" && log "Sauvegarde de .ssh réussie."
 
