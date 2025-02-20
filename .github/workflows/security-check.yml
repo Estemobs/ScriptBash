@@ -17,9 +17,8 @@ jobs:
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
-        with:
-          config-path: ""  # Utilise la config par défaut
-          fail: true  # Échoue si un secret est détecté
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   bash-lint:
     name: Check Bash Syntax
@@ -31,7 +30,6 @@ jobs:
 
       - name: Find all Bash scripts
         run: |
-          # Trouve tous les fichiers .sh et vérifie leur syntaxe
           find . -type f -name "*.sh" | while read script; do
             echo "Checking syntax of $script"
             bash -n "$script"
