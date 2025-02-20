@@ -1,0 +1,38 @@
+name: Security and Syntax Checks
+
+on:
+  push:
+    branches: [master, mymaster]
+  pull_request:
+    branches: [master, mymaster]
+
+jobs:
+  gitleaks:
+    name: Scan for secrets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config-path: ""  # Utilise la config par défaut
+          fail: true  # Échoue si un secret est détecté
+
+  bash-lint:
+    name: Check Bash Syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find all Bash scripts
+        run: |
+          # Trouve tous les fichiers .sh et vérifie leur syntaxe
+          find . -type f -name "*.sh" | while read script; do
+            echo "Checking syntax of $script"
+            bash -n "$script"
+          done
