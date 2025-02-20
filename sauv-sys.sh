@@ -1,91 +1,68 @@
 #!/bin/bash
 
-# Répertoire de sauvegarde dans le home de l'utilisateur exécutant le script
-USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
-BACKUP_DIR="$USER_HOME/backup_$(date +%Y-%m-%d_%H-%M-%S)"
-LOG_FILE="$BACKUP_DIR/backup.log"
+# Répertoire de sauvegarde
+BACKUP_DIR="$HOME/backup_$(date +%Y-%m-%d_%H-%M-%S)"
 mkdir -p "$BACKUP_DIR"
 
-# Log function to capture the output
-log() {
-    echo "$(date) - $1" | tee -a "$LOG_FILE"
-}
-
-# Demander à l'utilisateur s'il veut vider les corbeilles
-read -p "Voulez-vous vider toutes les corbeilles avant de commencer la sauvegarde ? (oui/non) " response
-if [[ "$response" == "oui" ]]; then
-    log "Vidage des corbeilles..."
-    rm -rf $USER_HOME/.local/share/Trash/* && log "Corbeille de $USER_HOME vidée."
-    sudo rm -rf /root/.local/share/Trash/* && log "Corbeille de root vidée."
-else
-    log "Les corbeilles ne seront pas vidées."
-fi
-
 # Sauvegarde des paquets installés
-log "Sauvegarde des paquets..."
-comm -23 <(apt-mark showmanual | sort) <(zcat /usr/share/doc/ubuntu-minimal/ubuntu-minimal.list.gz | sort) > "$BACKUP_DIR/apt-packages.txt" && log "Sauvegarde des paquets APT réussie."
-flatpak list --app --columns=application > "$BACKUP_DIR/flatpak-apps.txt" && log "Sauvegarde des paquets Flatpak réussie."
-snap list > "$BACKUP_DIR/snap-packages.txt" && log "Sauvegarde des paquets Snap réussie."
+echo "Sauvegarde des paquets..."
+dpkg --get-selections > "$BACKUP_DIR/apt-packages.txt"
+flatpak list --app --columns=application > "$BACKUP_DIR/flatpak-apps.txt"
+snap list > "$BACKUP_DIR/snap-packages.txt"
 
 if command -v pip &> /dev/null; then
-    pip freeze > "$BACKUP_DIR/pip-packages.txt" && log "Sauvegarde des paquets pip réussie."
+    pip freeze > "$BACKUP_DIR/pip-packages.txt"
 else
-    echo "pip non installé" > "$BACKUP_DIR/pip-packages.txt" && log "pip non installé."
+    echo "pip non installé" > "$BACKUP_DIR/pip-packages.txt"
 fi
 
 if command -v npm &> /dev/null; then
-    npm list -g --depth=0 > "$BACKUP_DIR/npm-packages.txt" && log "Sauvegarde des paquets npm réussie."
+    npm list -g --depth=0 > "$BACKUP_DIR/npm-packages.txt"
 else
-    echo "npm non installé" > "$BACKUP_DIR/npm-packages.txt" && log "npm non installé."
+    echo "npm non installé" > "$BACKUP_DIR/npm-packages.txt"
 fi
 
 # Sauvegarde des configurations et fichiers importants
-log "Sauvegarde des configurations..."
-[ -d "$USER_HOME/.config" ] && cp -r "$USER_HOME/.config" "$BACKUP_DIR/config" && log "Sauvegarde de .config réussie."
-[ -f "$USER_HOME/.bashrc" ] && cp "$USER_HOME/.bashrc" "$BACKUP_DIR/.bashrc" && log "Sauvegarde de .bashrc réussie."
-[ -f "/root/.bashrc" ] && cp "/root/.bashrc" "$BACKUP_DIR/root.bashrc" && log "Sauvegarde de root.bashrc réussie."
-[ -d "$USER_HOME/.local/share" ] && cp -r "$USER_HOME/.local/share" "$BACKUP_DIR/.local_share" && log "Sauvegarde de .local/share réussie."
-[ -d "$USER_HOME/.gnupg" ] && cp -r "$USER_HOME/.gnupg" "$BACKUP_DIR/.gnupg" && log "Sauvegarde de .gnupg réussie."
-[ -d "$USER_HOME/.ssh" ] && cp -r "$USER_HOME/.ssh" "$BACKUP_DIR/ssh" && log "Sauvegarde de .ssh réussie."
+echo "Sauvegarde des configurations..."
+[ -d "$HOME/.config" ] && cp -r "$HOME/.config" "$BACKUP_DIR/config"
+[ -f "$HOME/.bashrc" ] && cp "$HOME/.bashrc" "$BACKUP_DIR/.bashrc"
+[ -f "$HOME/.zshrc" ] && cp "$HOME/.zshrc" "$BACKUP_DIR/.zshrc"
+[ -d "$HOME/.local/share" ] && cp -r "$HOME/.local/share" "$BACKUP_DIR/.local_share"
+[ -d "$HOME/.gnupg" ] && cp -r "$HOME/.gnupg" "$BACKUP_DIR/.gnupg"
+[ -d "$HOME/.ssh" ] && cp -r "$HOME/.ssh" "$BACKUP_DIR/ssh"
 
 # Sauvegarde des extensions et paramètres GNOME
-log "Sauvegarde des extensions et paramètres GNOME..."
-[ -d "$USER_HOME/.local/share/gnome-shell/extensions/" ] && cp -r "$USER_HOME/.local/share/gnome-shell/extensions/" "$BACKUP_DIR/gnome-shell-extensions/" && log "Sauvegarde des extensions GNOME réussie."
-dconf dump /org/gnome/ > "$BACKUP_DIR/gnome-settings.dconf" && log "Sauvegarde des paramètres GNOME réussie."
+echo "Sauvegarde des extensions et paramètres GNOME..."
+[ -d "$HOME/.local/share/gnome-shell/extensions/" ] && cp -r "$HOME/.local/share/gnome-shell/extensions/" "$BACKUP_DIR/gnome-shell-extensions/"
+dconf dump /org/gnome/ > "$BACKUP_DIR/gnome-settings.dconf"
 
 # Sauvegarde des thèmes et icônes
-log "Sauvegarde des thèmes et icônes..."
-[ -d "$USER_HOME/.themes" ] && cp -r "$USER_HOME/.themes" "$BACKUP_DIR/themes/" && log "Sauvegarde des thèmes réussie."
-[ -d "$USER_HOME/.icons" ] && cp -r "$USER_HOME/.icons" "$BACKUP_DIR/icons/" && log "Sauvegarde des icônes réussie."
+echo "Sauvegarde des thèmes et icônes..."
+[ -d "$HOME/.themes" ] && cp -r "$HOME/.themes" "$BACKUP_DIR/themes/"
+[ -d "$HOME/.icons" ] && cp -r "$HOME/.icons" "$BACKUP_DIR/icons/"
+
+# Sauvegarde des scripts et applications
+echo "Sauvegarde des scripts et applications..."
+[ -d "$HOME/bin" ] && cp -r "$HOME/bin" "$BACKUP_DIR/bin/"
+[ -d "$HOME/scripts" ] && cp -r "$HOME/scripts" "$BACKUP_DIR/scripts/"
 
 # Sauvegarde des fichiers personnels importants
-log "Sauvegarde des fichiers personnels..."
-total_items=$(find /home/* -maxdepth 0 -not -path '*/\.*' -not -name 'ScriptBash' | wc -l)
-
-for item in /home/*; do
-    if [[ -d "$item" && "$item" != *"ScriptBash"* && "$item" != /home/.* ]]; then
-        log "Sauvegarde du répertoire : $item"
-        tar -cf "$BACKUP_DIR/home/$(basename "$item").tar" "$item"
-    elif [[ -f "$item" && "$item" != /home/.* ]]; then
-        log "Sauvegarde du fichier : $item"
-        cp "$item" "$BACKUP_DIR/home/"
-    fi
-done
-
-log "Sauvegarde de /home réussie."
+echo "Sauvegarde des fichiers personnels..."
+[ -d "$HOME/Documents" ] && cp -r "$HOME/Documents" "$BACKUP_DIR/Documents/"
+[ -d "$HOME/Images" ] && cp -r "$HOME/Images" "$BACKUP_DIR/Images/"
 
 # Sauvegarde des crontabs
-log "Sauvegarde des crontabs..."
-crontab -l > "$BACKUP_DIR/crontab.txt" && log "Sauvegarde de crontab réussie."
-sudo crontab -l > "$BACKUP_DIR/sudo-crontab.txt" && log "Sauvegarde de sudo crontab réussie."
+echo "Sauvegarde des crontabs..."
+crontab -l > "$BACKUP_DIR/crontab.txt"
+sudo crontab -l > "$BACKUP_DIR/sudo-crontab.txt"
 
 # Création de l'archive ZIP
-log "Création de l'archive ZIP..."
-cd "$USER_HOME"
-zip -r "$(basename $BACKUP_DIR).zip" "$(basename $BACKUP_DIR)" && log "Création de l'archive ZIP réussie."
+echo "Création de l'archive ZIP..."
+cd "$HOME"
+zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR"
 
 # Nettoyage
-log "Nettoyage des fichiers temporaires..."
-rm -rf "$BACKUP_DIR" && log "Nettoyage des fichiers temporaires réussi."
+echo "Nettoyage des fichiers temporaires..."
+rm -rf "$BACKUP_DIR"
 
-log "Sauvegarde terminée ! L'archive se trouve dans : $USER_HOME/$(basename $BACKUP_DIR).zip"
+echo "Sauvegarde terminée ! L'archive se trouve dans : $HOME/$BACKUP_DIR.zip"

@@ -15,13 +15,13 @@ log "Début du processus de mise à jour de tous les paquets..."
 
 # Mise à jour des paquets APT (paquets Debian)
 log "Mise à jour des paquets APT..."
-apt update && apt upgrade -y && apt full-upgrade -y
-apt autoremove -y  # Supprimer les paquets inutiles
+sudo apt update && sudo apt upgrade -y && sudo apt full-upgrade -y
+sudo apt autoremove -y  # Supprimer les paquets inutiles
 log "Mise à jour des paquets APT terminée."
 
 # Mise à jour des paquets Snap
 log "Mise à jour des paquets Snap..."
-snap refresh
+sudo snap refresh
 log "Mise à jour des paquets Snap terminée."
 
 # Mise à jour des paquets Flatpak
@@ -53,8 +53,8 @@ log "Vérification des paquets .deb installés..."
 for deb in ~/Downloads/*.deb; do
     if [ -f "$deb" ]; then
         log "Mise à jour du paquet .deb : $deb"
-        dpkg -i "$deb"  # Installer le fichier .deb
-        apt install -f -y  # Résoudre les dépendances manquantes après l'installation
+        sudo dpkg -i "$deb"  # Installer le fichier .deb
+        sudo apt install -f -y  # Résoudre les dépendances manquantes après l'installation
     fi
 done
 
@@ -62,7 +62,7 @@ done
 log "Vérification des logiciels installés à partir de .tar.gz..."
 if [ -d "$HOME/logiciel_compilé" ]; then
     log "Mise à jour de logiciel compilé à partir de .tar.gz..."
-    cd "$HOME/logiciel_compilé" && ./configure && make && make install
+    cd "$HOME/logiciel_compilé" && ./configure && make && sudo make install
 else
     log "Aucun logiciel compilé trouvé dans le répertoire spécifié."
 fi
