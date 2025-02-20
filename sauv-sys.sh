@@ -60,19 +60,7 @@ log "Sauvegarde des thèmes et icônes..."
 
 # Sauvegarde des fichiers personnels importants
 log "Sauvegarde des fichiers personnels..."
-total_items=$(find /home/* -maxdepth 0 -not -path '*/\.*' -not -name 'ScriptBash' | wc -l)
-
-for item in /home/*; do
-    if [[ -d "$item" && "$item" != *"ScriptBash"* && "$item" != /home/.* ]]; then
-        log "Sauvegarde du répertoire : $item"
-        tar -cf "$BACKUP_DIR/home/$(basename "$item").tar" "$item"
-    elif [[ -f "$item" && "$item" != /home/.* ]]; then
-        log "Sauvegarde du fichier : $item"
-        cp "$item" "$BACKUP_DIR/home/"
-    fi
-done
-
-log "Sauvegarde de /home réussie."
+rsync -av --exclude='.*' --exclude='ScriptBash' /home/* "$BACKUP_DIR/home/" && log "Sauvegarde des fichiers personnels réussie."
 
 # Sauvegarde des crontabs
 log "Sauvegarde des crontabs..."
