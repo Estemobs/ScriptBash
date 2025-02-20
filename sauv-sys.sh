@@ -60,7 +60,7 @@ log "Sauvegarde des thèmes et icônes..."
 
 # Sauvegarde des fichiers personnels importants
 log "Sauvegarde des fichiers personnels..."
-rsync -av --exclude='.*' --exclude='ScriptBash' --exclude='backup_*' --exclude='games' /home/* "$BACKUP_DIR/home/" && log "Sauvegarde des fichiers personnels réussie."
+rsync -av --exclude='.*' --exclude='ScriptBash' --exclude='backup_*' --exclude='Games' /home/* "$BACKUP_DIR/home/" && log "Sauvegarde des fichiers personnels réussie."
 
 # Sauvegarde des crontabs
 log "Sauvegarde des crontabs..."
