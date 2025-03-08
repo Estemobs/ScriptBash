@@ -13,12 +13,11 @@ SEARCH_DIR=~/  # Rechercher dans tout le home directory
 find $SEARCH_DIR -type d -name ".git" | while read git_dir; do
   repo_dir=$(dirname $git_dir)
 
-  # Vérifie si le hook post-checkout existe déjà
-  if [ ! -f "$repo_dir/.git/hooks/post-checkout" ]; then
-    echo "Ajout du hook post-checkout pour le dépôt $repo_dir"
+  # Remplacer le hook post-checkout, même s'il existe déjà
+  echo "Remplacement du hook post-checkout pour le dépôt $repo_dir"
     
-    # Créer le hook post-checkout avec le code intégré pour vérifier la branche
-    cat <<'EOL' > "$repo_dir/.git/hooks/post-checkout"
+  # Créer ou écraser le hook post-checkout avec le code intégré pour vérifier la branche
+  cat <<'EOL' > "$repo_dir/.git/hooks/post-checkout"
 #!/bin/bash
 
 # Vérifie la branche actuelle
@@ -32,11 +31,9 @@ if [ "$branch" = "master" ]; then
 fi
 EOL
 
-    # Rendre le hook exécutable
-    chmod +x "$repo_dir/.git/hooks/post-checkout"
-  else
-    echo "Le hook post-checkout existe déjà pour le dépôt $repo_dir"
-  fi
+  # Rendre le hook exécutable
+  chmod +x "$repo_dir/.git/hooks/post-checkout"
+
 done
 
 echo "Le script a été exécuté pour tous les dépôts."
