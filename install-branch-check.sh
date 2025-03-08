@@ -17,7 +17,7 @@ find $SEARCH_DIR -type d -name ".git" | while read git_dir; do
   echo "Remplacement du hook post-checkout pour le dépôt $repo_dir"
     
   # Créer ou écraser le hook post-checkout avec le code intégré pour vérifier la branche
-  cat <<'EOL' > "$repo_dir/.git/hooks/post-checkout"
+  sudo tee "$repo_dir/.git/hooks/post-checkout" > /dev/null <<'EOL'
 #!/bin/bash
 
 # Vérifie la branche actuelle
@@ -31,8 +31,8 @@ if [ "$branch" = "master" ]; then
 fi
 EOL
 
-  # Rendre le hook exécutable
-  chmod +x "$repo_dir/.git/hooks/post-checkout"
+  # Rendre le hook exécutable avec sudo
+  sudo chmod +x "$repo_dir/.git/hooks/post-checkout"
 
 done
 
