@@ -23,7 +23,7 @@ fi
 
 # Sauvegarde des paquets installés
 log "Sauvegarde des paquets..."
-comm -23 <(apt-mark showmanual | sort) <(zcat /usr/share/doc/ubuntu-minimal/ubuntu-minimal.list.gz | sort) > "$BACKUP_DIR/apt-packages.txt" && log "Sauvegarde des paquets APT réussie."
+comm -23 <(apt-mark showmanual | sort) <(apt list --installed 2>/dev/null | grep -Eo '^[^/]+(?=/)' | sort) > "$BACKUP_DIR/apt-packages.txt" && log "Sauvegarde des paquets APT réussie."
 flatpak list --app --columns=application > "$BACKUP_DIR/flatpak-apps.txt" && log "Sauvegarde des paquets Flatpak réussie."
 snap list > "$BACKUP_DIR/snap-packages.txt" && log "Sauvegarde des paquets Snap réussie."
 
