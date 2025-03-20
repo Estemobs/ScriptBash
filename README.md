@@ -24,4 +24,6 @@ Pour permettre à **VS Code** d'utiliser **Git** avec l'authentification SSH san
 - **sauv-sys.sh** : Sauvegarde les paquets installés, configurations et fichiers importants du système. V1 ✅
 - **ip_scanner.sh** : Scanne le réseau local pour détecter les hôtes actifs et leurs informations. ✅
 - **bot_discord.sh** : Démarre les bots Discord DDC et cocoyico. ✅
+- **install-branch-check.sh** : Ajoute automatiquement un hook `post-checkout` dans tous les dépôts Git pour vérifier la branche. 
+
 
