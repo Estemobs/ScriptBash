@@ -20,7 +20,7 @@ while IFS= read -r git_dir; do
   echo "Installation du hook pre-commit pour le dépôt : $repo_dir"
 
   # Créer ou écraser le hook pre-commit avec le code intégré pour vérifier la branche
-  sudo tee "$repo_dir/.git/hooks/pre-commit" > /dev/null <<'EOL'
+  tee "$repo_dir/.git/hooks/pre-commit" > /dev/null <<'EOL'
 #!/bin/bash
 
 # Vérifie la branche actuelle
@@ -28,15 +28,15 @@ branch=$(git symbolic-ref --short HEAD 2>/dev/null)
 
 # Si on est sur la branche master ou main, bloquer le commit direct
 if [ "$branch" = "master" ] || [ "$branch" = "main" ]; then
-    echo "❌ Commits directs sur la branche '$branch' ne sont pas autorisés."
+    echo "❌ Les commits directs sur la branche '$branch' ne sont pas autorisés."
     echo "👉 Veuillez créer une branche de travail et utiliser une pull request :"
     echo "   git checkout -b ma-branche"
     exit 1
 fi
 EOL
 
-  # Rendre le hook exécutable avec sudo
-  sudo chmod +x "$repo_dir/.git/hooks/pre-commit"
+  # Rendre le hook exécutable
+  chmod +x "$repo_dir/.git/hooks/pre-commit"
 
 done < <(find "$SEARCH_DIR" -type d -name ".git" 2>/dev/null)
 
