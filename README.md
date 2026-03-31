@@ -24,6 +24,33 @@ Pour permettre à **VS Code** d'utiliser **Git** avec l'authentification SSH san
 - **sauv-sys.sh** : Sauvegarde les paquets installés, configurations et fichiers importants du système. V1 ✅
 - **ip_scanner.sh** : Scanne le réseau local pour détecter les hôtes actifs et leurs informations. ✅
 - **bot_discord.sh** : Démarre les bots Discord DDC et cocoyico. ✅
-- **install-branch-check.sh** : Ajoute automatiquement un hook `pre-commit` dans tous les dépôts Git pour bloquer les commits directs sur `master` et `main`. ✅
+- **install-branch-check.sh** : Ajoute un hook `pre-commit` pour bloquer les commits directs sur `master` et `main`, limite le scan aux projets perso et supporte un mode cleanup securise. ✅
+
+### Utilisation de install-branch-check.sh
+
+- Par defaut: scan uniquement `~/Documents`, en simulation (dry-run), premier niveau uniquement.
+- Pour appliquer les changements:
+
+```bash
+./install-branch-check.sh --apply
+```
+
+- Pour ajouter des cibles de scan:
+
+```bash
+./install-branch-check.sh --target ~/projects --target ~/dev --apply
+```
+
+- Pour autoriser les depots imbriques:
+
+```bash
+./install-branch-check.sh --nested --maxdepth 6 --apply
+```
+
+- Pour nettoyer les hooks poses par erreur dans les caches/systeme (uniquement ceux signes par ce script):
+
+```bash
+./install-branch-check.sh --cleanup --apply
+```
 
 
