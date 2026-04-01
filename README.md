@@ -16,7 +16,38 @@ Pour permettre à **VS Code** d'utiliser **Git** avec l'authentification SSH san
    ssh-add ~/.ssh/id_rsa_new
    ```
 
-   CRONTAB BIENTOT 
+
+### Planification (crontab)
+
+Vous pouvez automatiser l'exécution des scripts via `cron`. Ouvrez votre crontab avec :
+
+```bash
+crontab -e
+```
+
+> **Précautions importantes**
+> - `cron` utilise un **PATH minimal** (`/usr/bin:/bin`). Définissez `PATH` en tête de crontab ou utilisez des chemins absolus.
+> - Certains scripts (ex. `sauv-sys.sh`) nécessitent `sudo` ; dans ce cas éditez la crontab root : `sudo crontab -e`.
+> - Redirigez toujours la sortie vers un fichier de log pour pouvoir diagnostiquer les erreurs.
+
+**Exemples copiables**
+
+```cron
+# Définir un PATH minimal pour cron
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Mettre à jour tous les paquets chaque jour à 3h00 (log dans ~/logs/update_all.log)
+0 3 * * * /bin/bash /chemin/vers/update_all.sh >> ~/logs/update_all.log 2>&1
+
+# Sauvegarde système chaque semaine le dimanche à 2h00 (nécessite sudo crontab -e)
+0 2 * * 0 /bin/bash /chemin/vers/sauv-sys.sh >> /var/log/sauv-sys.log 2>&1
+```
+
+**Dry-run (simulation)**
+
+Pour tester `update_all.sh` sans appliquer de changements, ajoutez l'option `-s` (simulate) à `apt-get` ou lancez le script manuellement et vérifiez les logs avant de l'ajouter à crontab.
+
+
 
 ### Description des scripts Bash
 
