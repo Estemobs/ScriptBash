@@ -8,7 +8,7 @@ if [[ -z "$local_ip" ]]; then
 fi
 
 # Extraction du préfixe du réseau à partir de l'adresse IP locale
-network_prefix=$(echo $local_ip | cut -d '.' -f 1-3)
+network_prefix=$(echo "$local_ip" | cut -d '.' -f 1-3)
 
 # Génération du réseau local à scanner (ex: 192.168.1.0/24)
 network="${network_prefix}.0/24"
@@ -17,7 +17,7 @@ network="${network_prefix}.0/24"
 echo "Scan en cours sur le réseau local : $network..."
 
 # Lancer un scan Nmap pour détecter les hôtes actifs et leurs informations
-scan_results=$(nmap -sP --open --max-retries 2 --host-timeout 60s $network)
+scan_results=$(nmap -sP --open --max-retries 2 --host-timeout 60s "$network")
 
 # Préparer un tableau temporaire pour les résultats
 output_file=$(mktemp)

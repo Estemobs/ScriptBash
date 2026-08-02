@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Répertoire de sauvegarde dans le home de l'utilisateur exécutant le script
-USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
+USER_HOME=$(eval echo "~${SUDO_USER:-$USER}")
 BACKUP_DIR="$USER_HOME/backup_$(date +%Y-%m-%d_%H-%M-%S)"
 LOG_FILE="$BACKUP_DIR/backup.log"
 mkdir -p "$BACKUP_DIR"
@@ -12,10 +12,10 @@ log() {
 }
 
 # Demander à l'utilisateur s'il veut vider les corbeilles
-read -p "Voulez-vous vider toutes les corbeilles avant de commencer la sauvegarde ? (oui/non) " response
+read -r -p "Voulez-vous vider toutes les corbeilles avant de commencer la sauvegarde ? (oui/non) " response
 if [[ "$response" == "oui" ]]; then
     log "Vidage des corbeilles..."
-    rm -rf $USER_HOME/.local/share/Trash/* && log "Corbeille de $USER_HOME vidée."
+    rm -rf "$USER_HOME"/.local/share/Trash/* && log "Corbeille de $USER_HOME vidée."
     sudo rm -rf /root/.local/share/Trash/* && log "Corbeille de root vidée."
 else
     log "Les corbeilles ne seront pas vidées."
@@ -63,15 +63,16 @@ rsync -av --exclude='.*' --exclude='ScriptBash' --exclude='backup_*' --exclude='
 # Sauvegarde des crontabs
 log "Sauvegarde des crontabs..."
 crontab -l > "$BACKUP_DIR/crontab.txt" && log "Sauvegarde de crontab réussie."
-sudo crontab -l > "$BACKUP_DIR/sudo-crontab.txt" && log "Sauvegarde de sudo crontab réussie."
+crontab_content=$(sudo crontab -l 2>/dev/null)
+printf '%s\n' "$crontab_content" > "$BACKUP_DIR/sudo-crontab.txt" && log "Sauvegarde de sudo crontab réussie."
 
 # Création de l'archive ZIP
 log "Création de l'archive ZIP..."
-cd "$USER_HOME"
-zip -r "$(basename $BACKUP_DIR).zip" "$(basename $BACKUP_DIR)" && log "Création de l'archive ZIP réussie."
+cd "$USER_HOME" || exit 1
+zip -r "$(basename "$BACKUP_DIR").zip" "$(basename "$BACKUP_DIR")" && log "Création de l'archive ZIP réussie."
 
 # Nettoyage
 log "Nettoyage des fichiers temporaires..."
 rm -rf "$BACKUP_DIR" && log "Nettoyage des fichiers temporaires réussi."
 
-log "Sauvegarde terminée ! L'archive se trouve dans : $USER_HOME/$(basename $BACKUP_DIR).zip"
+log "Sauvegarde terminée ! L'archive se trouve dans : $USER_HOME/$(basename "$BACKUP_DIR").zip"

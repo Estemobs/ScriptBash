@@ -35,7 +35,7 @@ log "Mise à jour des AppImages..."
 # Sinon, il faudra les mettre à jour manuellement.
 if command -v appimageupdate &> /dev/null; then
     if [ -d "$HOME/AppImages" ]; then
-        for appimage in $HOME/AppImages/*.AppImage; do
+        for appimage in "$HOME"/AppImages/*.AppImage; do
             if [ -f "$appimage" ]; then
                 log "Mise à jour de l'AppImage : $appimage"
                 appimageupdate "$appimage"  # Utilisation de appimageupdate
